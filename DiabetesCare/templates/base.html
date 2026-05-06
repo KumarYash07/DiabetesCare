@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DiabetesCare{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <!-- Navbar 1: Utility/Account Bar -->
+        <nav class="navbar navbar-utility">
+            <div class="container">
+                <div class="nav-left">
+                    <a href="{{ url_for('about') }}">About DiabetesCare</a>
+                </div>
+                <div class="nav-center">
+                    <form class="search-form">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="nav-right">
+                    {% if logged_in %}
+                        <span>Welcome, {{ session.username }}</span>
+                        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        <a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Navbar 2: Main Content Bar -->
+        <nav class="navbar navbar-main">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <i class="fas fa-heartbeat"></i> DiabetesCare
+                </a>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('causes') }}">Causes of Diabetes</a></li>
+                    <li><a href="{{ url_for('prevention') }}">Diabetes Prevention</a></li>
+                    <li><a href="{{ url_for('risk_test') }}" class="btn-risk-test">Diabetes Risk Test</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; {{ now.year if now else '2025' }} DiabetesCare. All rights reserved.</p>
+            <p>Disclaimer: This is a demo application. Consult a medical professional for diagnosis and treatment.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple script to get the current year for the footer
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSpan = document.querySelector('footer p:first-child span');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>

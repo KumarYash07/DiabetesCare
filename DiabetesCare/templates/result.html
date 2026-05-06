@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Result - DiabetesCare{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Diabetes Risk Assessment Result</h1>
+<div class="content-section result-section">
+    {% if prediction_text %}
+        <p class="prediction-result">{{ prediction_text }}</p>
+
+        {% if accuracy %}
+            <p class="model-accuracy">
+                <strong>Model Accuracy:</strong> {{ accuracy }}%
+            </p>
+        {% endif %}
+
+        <div class="action-buttons">
+            <a href="{{ url_for('prevention') }}" class="btn btn-primary">Learn About Prevention</a>
+            <a href="{{ url_for('risk_test') }}" class="btn btn-secondary">Take Test Again</a>
+        </div>
+    {% else %}
+        <p class="prediction-result error-message">No result found. Please take the risk test.</p>
+        <a href="{{ url_for('risk_test') }}" class="btn btn-primary">Start Test</a>
+    {% endif %}
+</div>
+{% endblock %}

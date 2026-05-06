@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Diabetes Risk Test - DiabetesCare{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Diabetes Risk Test</h1>
+
+<div class="risk-test-container">
+    <!-- Multi-step indicator (as seen in the image) -->
+    <div class="step-indicator">
+        <div class="step active" data-step="1">1. Pregnancies</div>
+        <div class="step" data-step="2">2. Glucose</div>
+        <div class="step" data-step="3">3. Blood Pressure</div>
+        <div class="step" data-step="4">4. Skin Thickness</div>
+        <div class="step" data-step="5">5. Insulin</div>
+        <div class="step" data-step="6">6. BMI</div>
+        <div class="step" data-step="7">7. DPF</div>
+        <div class="step" data-step="8">8. Age</div>
+    </div>
+
+    <form id="risk-test-form" method="POST" action="{{ url_for('predict') }}">
+        <!-- Step 1: Pregnancies -->
+        <div class="form-step active" data-step="1">
+            <h2>Step 1: Pregnancies</h2>
+            <p>How many times have you been pregnant? (Enter 0 if male or not applicable)</p>
+            <div class="form-group">
+                <label for="pregnancies">Number of Pregnancies:</label>
+                <input type="number" id="pregnancies" name="pregnancies" min="0" required>
+            </div>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 2: Glucose -->
+        <div class="form-step" data-step="2">
+            <h2>Step 2: Glucose</h2>
+            <p>What is your plasma glucose concentration a 2 hours in an oral glucose tolerance test? (mg/dL)</p>
+            <div class="form-group">
+                <label for="glucose">Glucose (mg/dL):</label>
+                <input type="number" id="glucose" name="glucose" min="0" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 3: Blood Pressure -->
+        <div class="form-step" data-step="3">
+            <h2>Step 3: Blood Pressure</h2>
+            <p>What is your Diastolic blood pressure? (mm Hg)</p>
+            <div class="form-group">
+                <label for="bloodpressure">Blood Pressure (mm Hg):</label>
+                <input type="number" id="bloodpressure" name="bloodpressure" min="0" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 4: Skin Thickness -->
+        <div class="form-step" data-step="4">
+            <h2>Step 4: Skin Thickness</h2>
+            <p>What is your Triceps skin fold thickness? (mm)</p>
+            <div class="form-group">
+                <label for="skinthickness">Skin Thickness (mm):</label>
+                <input type="number" id="skinthickness" name="skinthickness" min="0" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 5: Insulin -->
+        <div class="form-step" data-step="5">
+            <h2>Step 5: Insulin</h2>
+            <p>What is your 2-Hour serum insulin? (mu U/ml)</p>
+            <div class="form-group">
+                <label for="insulin">Insulin (mu U/ml):</label>
+                <input type="number" id="insulin" name="insulin" min="0" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 6: BMI -->
+        <div class="form-step" data-step="6">
+            <h2>Step 6: BMI</h2>
+            <p>What is your Body Mass Index? (weight in kg/(height in m)^2)</p>
+            <div class="form-group">
+                <label for="bmi">BMI:</label>
+                <input type="number" id="bmi" name="bmi" step="0.1" min="0" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 7: Diabetes Pedigree Function (DPF) -->
+        <div class="form-step" data-step="7">
+            <h2>Step 7: DPF</h2>
+            <p>What is your Diabetes Pedigree Function? (A function that scores likelihood of diabetes based on family history)</p>
+            <div class="form-group">
+                <label for="dpf">DPF Value:</label>
+                <input type="number" id="dpf" name="dpf" step="0.001" min="0" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="button" class="btn btn-next">Next</button>
+        </div>
+
+        <!-- Step 8: Age -->
+        <div class="form-step" data-step="8">
+            <h2>Step 8: Age</h2>
+            <p>What is your age? (years)</p>
+            <div class="form-group">
+                <label for="age">Age (years):</label>
+                <input type="number" id="age" name="age" min="1" required>
+            </div>
+            <button type="button" class="btn btn-prev">Previous</button>
+            <button type="submit" class="btn btn-primary">Get Result</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('risk-test-form');
+        const steps = form.querySelectorAll('.form-step');
+        const indicators = document.querySelectorAll('.step-indicator .step');
+        let currentStep = 1;
+
+        function updateSteps() {
+            steps.forEach(step => {
+                step.classList.remove('active');
+                if (parseInt(step.dataset.step) === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+            indicators.forEach(indicator => {
+                indicator.classList.remove('active');
+                if (parseInt(indicator.dataset.step) === currentStep) {
+                    indicator.classList.add('active');
+                }
+            });
+        }
+
+        form.querySelectorAll('.btn-next').forEach(button => {
+            button.addEventListener('click', function() {
+                // Simple validation before moving to the next step
+                const currentInput = steps[currentStep - 1].querySelector('input');
+                if (currentInput && !currentInput.value) {
+                    alert('Please fill in the current field before proceeding.');
+                    return;
+                }
+                if (currentStep < steps.length) {
+                    currentStep++;
+                    updateSteps();
+                }
+            });
+        });
+
+        form.querySelectorAll('.btn-prev').forEach(button => {
+            button.addEventListener('click', function() {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateSteps();
+                }
+            });
+        });
+
+        // Initialize the first step
+        updateSteps();
+    });
+</script>
+{% endblock %}
