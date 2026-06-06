@@ -3,11 +3,14 @@
 {% block title %}Home - DiabetesCare{% endblock %}
 
 {% block content %}
+
 <section class="hero">
     <div class="hero-content">
         <h1>Take Control of Your Health</h1>
         <p>Your trusted source for diabetes information, prevention tips, and risk assessment.</p>
-        <a href="{{ url_for('risk_test') }}" class="btn btn-primary btn-lg">Take the Diabetes Risk Test Now</a>
+        <a href="{{ url_for('risk_test') }}" class="btn btn-primary btn-lg">
+            Take the Diabetes Risk Test Now
+        </a>
     </div>
 </section>
 
@@ -19,22 +22,24 @@
 </section>
 {% endif %}
 
-
 <section class="info-cards">
     <div class="card">
         <h2><i class="fas fa-book-open"></i> Learn About Diabetes</h2>
         <p>Understand the different types, symptoms, and long-term effects of diabetes.</p>
         <a href="{{ url_for('causes') }}" class="btn btn-secondary">Read More</a>
     </div>
+
     <div class="card">
         <h2><i class="fas fa-shield-alt"></i> Prevention is Key</h2>
         <p>Discover lifestyle changes and tips to prevent or delay the onset of Type 2 Diabetes.</p>
         <a href="{{ url_for('prevention') }}" class="btn btn-secondary">Get Tips</a>
     </div>
+
     <div class="card">
         <h2><i class="fas fa-calculator"></i> Assess Your Risk</h2>
-        <p>Use our custom-built machine learning model to estimate your personal diabetes risk.</p>
+        <p>Use our Random Forest machine learning model to estimate your personal diabetes risk.</p>
         <a href="{{ url_for('risk_test') }}" class="btn btn-secondary">Start Test</a>
     </div>
 </section>
+
 {% endblock %}
